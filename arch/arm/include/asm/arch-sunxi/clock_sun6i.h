@@ -250,7 +250,11 @@ struct sunxi_ccm_reg {
 #define CCM_PLL10_CTRL_LOCK		(0x1 << 28)
 #define CCM_PLL10_CTRL_EN		(0x1 << 31)
 
+#if defined(CONFIG_MACH_SUN50I)
+#define CCM_PLL11_CTRL_N(n)		((((n) - 1) & 0x7f) << 8)
+#else
 #define CCM_PLL11_CTRL_N(n)		((((n) - 1) & 0x3f) << 8)
+#endif
 #define CCM_PLL11_CTRL_SIGMA_DELTA_EN	(0x1 << 24)
 #define CCM_PLL11_CTRL_UPD		(0x1 << 30)
 #define CCM_PLL11_CTRL_EN		(0x1 << 31)
