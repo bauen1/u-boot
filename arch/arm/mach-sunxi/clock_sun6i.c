@@ -116,11 +116,10 @@ void clock_set_pll1(unsigned int clk)
 	int k = 1;
 	int m = 1;
 
-	if (clk > 1152000000) {
-		k = 2;
-	} else if (clk > 768000000) {
+	if (clk > 1368000000) {
 		k = 3;
-		m = 2;
+	} else if (clk > 768000000) {
+		k = 2;
 	}
 
 	/* Switch to 24MHz clock while changing PLL1 */
