@@ -16,7 +16,7 @@ fi
 if grep -q "^CONFIG_MACH_SUN50I_H6=y" .config; then
 	BL31_ADDR=0x104000
 else
-	BL31_ADDR=0x44000
+	BL31_ADDR=0x49000
 fi
 
 cat << __HEADER_EOF
