@@ -60,6 +60,7 @@ static int ehci_usb_probe(struct udevice *dev)
 		     priv->ahb_gate_mask | extra_ahb_gate_mask);
 #endif
 
+	sunxi_usb_phy_probe(priv->phy_index);
 	sunxi_usb_phy_init(priv->phy_index);
 	sunxi_usb_phy_power_on(priv->phy_index);
 
@@ -80,6 +81,7 @@ static int ehci_usb_remove(struct udevice *dev)
 		return ret;
 
 	sunxi_usb_phy_exit(priv->phy_index);
+	sunxi_usb_phy_remove(priv->phy_index);
 
 #ifdef CONFIG_SUNXI_GEN_SUN6I
 	clrbits_le32(&ccm->ahb_reset0_cfg, priv->ahb_gate_mask);

@@ -335,13 +335,13 @@ int sunxi_usb_phy_id_detect(int index)
 	return gpio_get_value(phy->gpio_id_det);
 }
 
-int sunxi_usb_phy_probe(void)
+int sunxi_usb_phy_probe(int i)
 {
 	struct sunxi_ccm_reg *ccm = (struct sunxi_ccm_reg *)SUNXI_CCM_BASE;
 	struct sunxi_usb_phy *phy;
-	int i, ret = 0;
+	int ret = 0;
 
-	for (i = 0; i < CONFIG_SUNXI_USB_PHYS; i++) {
+	{
 		phy = &sunxi_usb_phy[i];
 
 		phy->gpio_vbus = get_vbus_gpio(i);
@@ -382,15 +382,14 @@ int sunxi_usb_phy_probe(void)
 	return 0;
 }
 
-int sunxi_usb_phy_remove(void)
+int sunxi_usb_phy_remove(int i)
 {
 	struct sunxi_ccm_reg *ccm = (struct sunxi_ccm_reg *)SUNXI_CCM_BASE;
 	struct sunxi_usb_phy *phy;
-	int i;
 
 	clrbits_le32(&ccm->usb_clk_cfg, CCM_USB_CTRL_PHYGATE);
 
-	for (i = 0; i < CONFIG_SUNXI_USB_PHYS; i++) {
+	{
 		phy = &sunxi_usb_phy[i];
 
 		if (phy->gpio_vbus >= 0)

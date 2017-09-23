@@ -729,12 +729,6 @@ int misc_init_r(void)
 
 	setup_environment(gd->fdt_blob);
 
-#ifndef CONFIG_MACH_SUN9I
-	ret = sunxi_usb_phy_probe();
-	if (ret)
-		return ret;
-#endif
-
 #ifdef CONFIG_USB_ETHER
 	usb_ether_init();
 #endif
