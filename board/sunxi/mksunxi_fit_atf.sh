@@ -1,13 +1,14 @@
 #!/bin/sh
 #
-# script to generate FIT image source for 64-bit sunxi boards with
-# ARM Trusted Firmware and multiple device trees (given on the command line)
+# script to generate FIT image source for 64-bit sunxi boards with ARM Trusted
+# Firmware, SCP firmware, and multiple device trees (given on the command line)
 #
-# usage: $0 <dt_name> [<dt_name> [<dt_name] ...]
+# usage: $0 <dt_name> [<dt_name> ...]
 
 [ -z "$BL31" ] && BL31="bl31.bin"
+[ -z "$SCP" ] && SCP="scp.bin"
 
-if [ ! -f $BL31 ]; then
+if [ ! -f "$BL31" ]; then
 	echo "WARNING: BL31 file $BL31 NOT found, resulting binary is non-functional" >&2
 	echo "Please read the section on ARM Trusted Firmware (ATF) in board/sunxi/README.sunxi64" >&2
 	BL31=/dev/null
@@ -23,7 +24,7 @@ cat << __HEADER_EOF
 /dts-v1/;
 
 / {
-	description = "Configuration to load ATF before U-Boot";
+	description = "Configuration to load ATF and SCP before U-Boot";
 	#address-cells = <1>;
 
 	images {
@@ -48,8 +49,21 @@ cat << __HEADER_EOF
 		};
 __HEADER_EOF
 
+if [ -f "$SCP" ]; then
+	cat << __SCP_EOF
+		scp {
+			description = "SCP Firmware";
+			data = /incbin/("$SCP");
+			type = "firmware";
+			arch = "or1k";
+			compression = "none";
+			load = <0x40000>;
+		};
+__SCP_EOF
+fi
+
 cnt=1
-for dtname in $*
+for dtname
 do
 	cat << __FDT_IMAGE_EOF
 		fdt_$cnt {
@@ -69,21 +83,27 @@ cat << __CONF_HEADER_EOF
 
 __CONF_HEADER_EOF
 
+if [ -f "$SCP" ]; then
+	LOADABLES='"uboot", "scp"'
+else
+	LOADABLES='"uboot"'
+fi
+
 cnt=1
-for dtname in $*
+for dtname
 do
 	cat << __CONF_SECTION_EOF
 		config_$cnt {
 			description = "$(basename $dtname .dtb)";
 			firmware = "atf";
-			loadables = "uboot";
+			loadables = $LOADABLES;
 			fdt = "fdt_$cnt";
 		};
 __CONF_SECTION_EOF
 	cnt=$((cnt+1))
 done
 
-cat << __ITS_EOF
+cat << __FOOTER_EOF
 	};
 };
-__ITS_EOF
+__FOOTER_EOF
