@@ -32,6 +32,7 @@ cat << __HEADER_EOF
 			data = /incbin/("u-boot-nodtb.bin");
 			type = "standalone";
 			arch = "arm64";
+			os = "u-boot";
 			compression = "none";
 			load = <0x4a000000>;
 		};
@@ -40,6 +41,7 @@ cat << __HEADER_EOF
 			data = /incbin/("$BL31");
 			type = "firmware";
 			arch = "arm64";
+			os = "arm-trusted-firmware";
 			compression = "none";
 			load = <$BL31_ADDR>;
 			entry = <$BL31_ADDR>;
@@ -73,8 +75,8 @@ do
 	cat << __CONF_SECTION_EOF
 		config_$cnt {
 			description = "$(basename $dtname .dtb)";
-			firmware = "uboot";
-			loadables = "atf";
+			firmware = "atf";
+			loadables = "uboot";
 			fdt = "fdt_$cnt";
 		};
 __CONF_SECTION_EOF
