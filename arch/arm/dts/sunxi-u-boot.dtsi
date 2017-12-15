@@ -17,7 +17,7 @@
 			filename = "spl/sunxi-spl.bin";
 		};
 		u-boot-img {
-#ifdef CONFIG_MMC
+#ifdef CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_USE_SECTOR
 			size = <UBOOT_MMC_MAX_SIZE>;
 #endif
 			pos = <CONFIG_SPL_PAD_TO>;
