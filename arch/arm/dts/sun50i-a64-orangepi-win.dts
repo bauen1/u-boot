@@ -67,7 +67,19 @@
 };
 
 &ehci1 {
-       status = "okay";
+	status = "okay";
+};
+
+&emac {
+	pinctrl-names = "default";
+	pinctrl-0 = <&emac_rgmii_pins>;
+	phy-mode = "rgmii";
+	phy = <&phy1>;
+	status = "okay";
+
+	phy1: ethernet-phy@1 {
+		reg = <1>;
+	};
 };
 
 &mmc0 {
@@ -80,7 +92,7 @@
 };
 
 &ohci1 {
-       status = "okay";
+	status = "okay";
 };
 
 &uart0 {
@@ -90,5 +102,5 @@
 };
 
 &usbphy {
-       status = "okay";
+	status = "okay";
 };
