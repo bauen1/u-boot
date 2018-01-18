@@ -51,6 +51,10 @@
 	#address-cells = <1>;
 	#size-cells = <1>;
 
+	aliases {
+		ethernet0 = &emac;
+	};
+
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -267,6 +271,16 @@
 			interrupt-controller;
 			#interrupt-cells = <3>;
 
+			emac_rgmii_pins: emac_rgmii_pins {
+				allwinner,pins = "PD8", "PD9", "PD10", "PD11",
+						 "PD12", "PD13", "PD15",
+						 "PD16", "PD17", "PD18", "PD19",
+						 "PD20", "PD21", "PD22", "PD23";
+				allwinner,function = "emac";
+				allwinner,drive = <3>;
+				allwinner,pull = <0>;
+			};
+
 			i2c1_pins: i2c1_pins {
 				pins = "PH2", "PH3";
 				function = "i2c1";
@@ -399,6 +413,20 @@
 			status = "disabled";
 			#address-cells = <1>;
 			#size-cells = <0>;
+		};
+
+		emac: ethernet@01c30000 {
+			compatible = "allwinner,sun50i-a64-emac";
+			reg = <0x01c30000 0x2000>, <0x01c00030 0x4>;
+			reg-names = "emac", "syscon";
+			interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
+			resets = <&ccu RST_BUS_EMAC>;
+			reset-names = "ahb";
+			clocks = <&ccu CLK_BUS_EMAC>;
+			clock-names = "ahb";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
 		};
 
 		gic: interrupt-controller@1c81000 {
