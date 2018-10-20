@@ -324,7 +324,16 @@ static int spl_fit_record_loadable(const void *fit, int images, int index,
 static int spl_fit_image_get_os(const void *fit, int noffset, uint8_t *os)
 {
 #if CONFIG_IS_ENABLED(FIT_IMAGE_TINY)
-	return -ENOTSUPP;
+	const char *str;
+	int len;
+
+	str = fdt_getprop(fit, noffset, FIT_OS_PROP, &len);
+	if (str && !strcmp(str, "u-boot"))
+		*os = IH_OS_U_BOOT;
+	else
+		*os = IH_OS_INVALID;
+
+	return 0;
 #else
 	return fit_image_get_os(fit, noffset, os);
 #endif
@@ -450,7 +459,11 @@ int spl_load_simple_fit(struct spl_image_info *spl_image,
 	 * as a U-Boot image, if no OS-type has been declared.
 	 */
 	if (!spl_fit_image_get_os(fit, node, &spl_image->os))
+#if CONFIG_IS_ENABLED(FIT_IMAGE_TINY)
+		debug("Image OS is %d\n", spl_image->os);
+#else
 		debug("Image OS is %s\n", genimg_get_os_name(spl_image->os));
+#endif
 #if !defined(CONFIG_SPL_OS_BOOT)
 	else
 		spl_image->os = IH_OS_U_BOOT;
@@ -478,7 +491,11 @@ int spl_load_simple_fit(struct spl_image_info *spl_image,
 			continue;
 
 		if (!spl_fit_image_get_os(fit, node, &os_type))
+#if CONFIG_IS_ENABLED(FIT_IMAGE_TINY)
+			debug("Loadable is %d\n", os_type);
+#else
 			debug("Loadable is %s\n", genimg_get_os_name(os_type));
+#endif
 
 		if (os_type == IH_OS_U_BOOT) {
 			spl_fit_append_fdt(&image_info, info, sector,
