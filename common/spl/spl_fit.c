@@ -170,7 +170,6 @@ static int spl_load_fit_image(struct spl_load_info *info, ulong sector,
 	void *src;
 	ulong overhead;
 	int nr_sectors;
-	int align_len = ARCH_DMA_MINALIGN - 1;
 	uint8_t image_comp = -1, type = -1;
 	const void *data;
 	bool external_data = false;
@@ -205,7 +204,7 @@ static int spl_load_fit_image(struct spl_load_info *info, ulong sector,
 		if (fit_image_get_data_size(fit, node, &len))
 			return -ENOENT;
 
-		load_ptr = (load_addr + align_len) & ~align_len;
+		load_ptr = CONFIG_SYS_LOAD_ADDR;
 		length = len;
 
 		overhead = get_aligned_image_overhead(info, offset);
