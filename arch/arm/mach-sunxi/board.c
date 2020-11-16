@@ -228,10 +228,7 @@ void s_init(void)
 
 static int sunxi_get_boot_source(void)
 {
-	if (!is_boot0_magic(SPL_ADDR + 4)) /* eGON.BT0 */
-		return SUNXI_INVALID_BOOT_SOURCE;
-
-	return readb(SPL_ADDR + 0x28);
+	return readb(SPL_ADDR + 0x20);
 }
 
 /* The sunxi internal brom will try to loader external bootloader

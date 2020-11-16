@@ -382,7 +382,7 @@ endif
 $(obj)/$(SPL_BIN).sfp: $(obj)/$(SPL_BIN).bin FORCE
 	$(call if_changed,mkimage)
 
-MKIMAGEFLAGS_sunxi-spl.bin = -T sunxi_egon \
+MKIMAGEFLAGS_sunxi-spl.bin = -T sunxi_toc0 -a $(CONFIG_SPL_TEXT_BASE) \
 	-n $(CONFIG_DEFAULT_DEVICE_TREE)
 
 $(obj)/sunxi-spl.bin: $(obj)/$(SPL_BIN).bin FORCE
