@@ -105,6 +105,7 @@ dumpimage-mkimage-objs := aisimage.o \
 			$(ROCKCHIP_OBS) \
 			socfpgaimage.o \
 			sunxi_egon.o \
+			sunxi_toc0.o \
 			lib/crc16.o \
 			lib/sha1.o \
 			lib/sha256.o \
@@ -154,8 +155,6 @@ ifneq ($(CONFIG_ARMADA_38X)$(CONFIG_ARMADA_39X),)
 HOSTCFLAGS_kwbimage.o += -DCONFIG_KWB_SECURE
 endif
 
-# MXSImage needs LibSSL
-ifneq ($(CONFIG_MX23)$(CONFIG_MX28)$(CONFIG_ARMADA_38X)$(CONFIG_ARMADA_39X)$(CONFIG_FIT_SIGNATURE),)
 HOSTCFLAGS_kwbimage.o += \
 	$(shell pkg-config --cflags libssl libcrypto 2> /dev/null || echo "")
 HOSTLDLIBS_mkimage += \
@@ -167,7 +166,6 @@ ifeq ($(HOSTOS),darwin)
 HOSTCFLAGS_mxsimage.o += -Wno-deprecated-declarations
 HOSTCFLAGS_image-sig.o += -Wno-deprecated-declarations
 HOSTCFLAGS_rsa-sign.o += -Wno-deprecated-declarations
-endif
 endif
 
 HOSTCFLAGS_fit_image.o += -DMKIMAGE_DTC=\"$(CONFIG_MKIMAGE_DTC_PATH)\"
