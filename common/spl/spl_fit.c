@@ -558,6 +558,24 @@ int spl_load_simple_fit(struct spl_image_info *spl_image,
 	if (spl_load_simple_fit_skip_processing())
 		return 0;
 
+#if  FIT_IMAGE_ENABLE_VERIFY
+    {
+        int conf_node = fit_find_config_node(fit);
+        if (conf_node < 0) {
+            puts("No matching DT\n");
+            return conf_node;
+        }
+
+        puts("   Verifying Hash Integrity ... ");
+        if (fit_config_verify(fit, conf_node)) {
+            puts("Bad Data Hash\n");
+            return -EACCES;
+        }
+        puts("OK\n");
+    }
+#endif
+
+
 	/* find the node holding the images information */
 	images = fdt_path_offset(fit, FIT_IMAGES_PATH);
 	if (images < 0) {
