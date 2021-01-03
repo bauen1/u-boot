@@ -19,33 +19,19 @@
 };
 
 &binman {
-	u-boot-sunxi-with-spl {
-		filename = "u-boot-sunxi-with-spl.bin";
-		pad-byte = <0xff>;
+    u-boot-sunxi-fit {
+        filename = "u-boot-sunxi-fit.bin";
 
-		blob {
-			filename = "spl/sunxi-spl.bin";
-		};
+        fit {
+            description = "Verified Boot Configuration to load ATF, SCP before U-Boot";
+            #address-cells = <1>;
+            fit,fdt-list = "of-list";
 
-#ifdef CONFIG_ARM64
-		fit {
-			description = "Configuration to load ATF before U-Boot";
-			#address-cells = <1>;
-			fit,fdt-list = "of-list";
+            fit,key-dir = "keys";
+            fit,key-dest = "spl/u-boot-spl.dtb";
+            fit,key-require = "true";
 
-			images {
-				uboot {
-					description = "U-Boot (64-bit)";
-					type = "standalone";
-					os = "u-boot";
-					arch = "arm64";
-					compression = "none";
-					load = <0x4a000000>;
-
-					u-boot-nodtb {
-					};
-				};
-
+            images {
 				atf {
 					description = "ARM Trusted Firmware";
 					type = "firmware";
@@ -59,9 +45,19 @@
 						filename = "bl31.bin";
 						missing-msg = "atf-bl31-sunxi";
 					};
+
+                    hash {
+                        algo = "sha256";
+                    };
+
+                    // Doesn't seem to work if you also add a configuration signature
+//                    signature {
+//                        algo = "sha256,rsa2048";
+//                        key-name-hint = "dev2";
+//                    };
 				};
 
-				scp {
+                scp {
 					description = "SCP firmware";
 					type = "firmware";
 					arch = "or1k";
@@ -72,30 +68,93 @@
 						filename = "scp.bin";
 						missing-msg = "scp-sunxi";
 					};
+
+                    hash {
+                        algo = "sha256";
+                    };
+				};
+
+
+				uboot {
+					description = "U-Boot (64-bit)";
+					type = "standalone";
+					os = "u-boot";
+					arch = "arm64";
+					compression = "none";
+					load = <0x4a000000>;
+
+					u-boot-nodtb {
+					};
+
+                    hash {
+                        algo = "sha256";
+                    };
 				};
 
 				@fdt-SEQ {
 					description = "NAME";
 					type = "flat_dt";
 					compression = "none";
-				};
-			};
 
-			configurations {
-				default = "config-1";
+                    hash {
+                        algo = "sha256";
+				    };
+                };
+            };
 
-				@config-SEQ {
-					description = "NAME";
+            configurations {
+    			default = "config-1";
+
+				config-1 {
+					description = "config-1";
 					firmware = "atf";
-					loadables = "scp", "uboot";
-					fdt = "fdt-SEQ";
+                    loadables = "scp", "uboot";
+					fdt = "fdt-1";
+
+                    signature {
+                        algo = "sha256,rsa2048";
+                        key-name-hint = "dev";
+                        // make sure not to miss (important) things here, or you'll be in trouble
+                        // sign-images = "firmware", "loadables", "fdt";
+                        sign-images = "firmware";
+                    };
 				};
 			};
-		};
-#else
-		u-boot-img {
-			offset = <CONFIG_SPL_PAD_TO>;
-		};
-#endif
+        };
+
+    };
+
+    // After the FIT so the changes to u-boot-spl-dtb get picked up
+    u-boot-sunxi-toc0 {
+        filename = "u-boot-sunxi-toc0.bin";
+
+        mkimage {
+            offset = <0>;
+
+            // TODO: figure out how to use CONFIG_SPL_TEXT_BASE
+            args = "-T sunxi_toc0 -a 0x20840";
+
+            //u-boot-spl-nodtb {};
+            blob@0 {
+                filename = "spl/u-boot-spl-nodtb.bin";
+            };
+
+            blob@1 {
+                filename = "spl/u-boot-spl.dtb";
+            };
+        };
+    };
+
+	u-boot-sunxi-with-spl {
+		filename = "u-boot-sunxi-with-spl.bin";
+		pad-byte = <0xff>;
+
+        blob@0 {
+            filename = "u-boot-sunxi-toc0.bin";
+        };
+
+        blob@1 {
+            filename = "u-boot-sunxi-fit.bin";
+        };
 	};
 };

@@ -26,3 +26,14 @@ CONFIG_USB_DWC3=y
 
 # support toc0 without "moving" the code
 CONFIG_SPL_TEXT_BASE=0x20840
+
+# verified boot
+CONFIG_FIT_SIGNATURE=y
+CONFIG_SPL_FIT_SIGNATURE=y
+
+# NOTE: we don't want all the cruft
+CONFIG_SPL_DM=n
+CONFIG_SPL_OF_CONTROL=y
+CONFIG_OF_SEPARATE=y
+# Important, otherwise SPL thinks that the device tree is in (inaccessible) DRAM
+CONFIG_SPL_SEPARATE_BSS=y

@@ -44,6 +44,8 @@ fit-dtb.blob*
 /u-boot*
 /boards.cfg
 /*.log
+/keys
+/mkimage*
 
 #
 # git files that we don't want to ignore even it they are dot-files
