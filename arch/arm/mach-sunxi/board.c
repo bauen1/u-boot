@@ -288,6 +288,7 @@ uint32_t sunxi_get_boot_device(void)
  */
 unsigned long spl_mmc_get_uboot_raw_sector(struct mmc *mmc)
 {
+#if 0
 	unsigned long sector = CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR;
 
 	switch (sunxi_get_boot_source()) {
@@ -298,6 +299,9 @@ unsigned long spl_mmc_get_uboot_raw_sector(struct mmc *mmc)
 	}
 
 	return sector;
+#else
+    return readl(SPL_ADDR + 0x1c) / 512 + 8 * 2;
+#endif
 }
 
 u32 spl_boot_device(void)
