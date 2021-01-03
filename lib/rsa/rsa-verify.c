@@ -346,7 +346,7 @@ static int rsa_verify_key(struct image_sign_info *info,
 	uint8_t buf[sig_len];
 	hash_len = checksum->checksum_len;
 
-#if !defined(USE_HOSTCC)
+#if !defined(USE_HOSTCC) && CONFIG_IS_ENABLED(DM)
 	ret = uclass_get_device(UCLASS_MOD_EXP, 0, &mod_exp_dev);
 	if (ret) {
 		printf("RSA: Can't find Modular Exp implementation\n");

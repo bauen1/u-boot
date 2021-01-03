@@ -155,7 +155,6 @@ config SPL_FIT_PRINT
 
 config SPL_FIT_SIGNATURE
 	bool "Enable signature verification of FIT firmware within SPL"
-	depends on SPL_DM
 	select SPL_FIT
 	select SPL_CRYPTO_SUPPORT
 	select SPL_HASH_SUPPORT
