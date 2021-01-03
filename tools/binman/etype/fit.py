@@ -251,6 +251,16 @@ class Entry_fit(Entry):
         ext_offset = self._fit_props.get('fit,external-offset')
         if ext_offset is not None:
             args += ['-E', '-p', '%x' % fdt_util.fdt32_to_cpu(ext_offset.value)]
+        key_dir = self._fit_props.get("fit,key-dir");
+        if key_dir is not None:
+            args += ["-k", key_dir.value]
+        key_require = self._fit_props.get("fit,key-require");
+        if key_require is not None and key_require.value == "true":
+            args += ["-r"]
+        key_dest = self._fit_props.get("fit,key-dest");
+        if key_dest is not None:
+            args += ["-K", key_dest.value]
+
         tools.Run('mkimage', '-t', '-F', output_fname, *args)
 
         self.SetContents(tools.ReadFile(output_fname))
