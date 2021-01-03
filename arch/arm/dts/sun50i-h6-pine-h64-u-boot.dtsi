@@ -115,8 +115,8 @@
                         algo = "sha256,rsa2048";
                         key-name-hint = "dev";
                         // make sure not to miss (important) things here, or you'll be in trouble
-                        // sign-images = "firmware", "loadables", "fdt";
-                        sign-images = "firmware";
+                        sign-images = "firmware", "loadables", "fdt";
+                        // sign-images = "firmware";
                     };
 				};
 			};
