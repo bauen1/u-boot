@@ -96,6 +96,10 @@
 					type = "flat_dt";
 					compression = "none";
 
+                    blob {
+                        filename = "arch/arm/dts/sun50i-h6-pine-h64.dtb";
+                    };
+
                     hash {
                         algo = "sha256";
 				    };
