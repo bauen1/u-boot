@@ -250,8 +250,13 @@ static int sun4i_spi_parse_pins(struct udevice *dev)
 				break;
 
 			if (IS_ENABLED(CONFIG_MACH_SUN50I) ||
-			    IS_ENABLED(CONFIG_SUN50I_GEN_H6))
+			    IS_ENABLED(CONFIG_SUN50I_GEN_H6)) {
+                            if (pin >= 227 && pin <= 230) {
+                                sunxi_gpio_set_cfgpin(pin, 2);
+                            } else {
 				sunxi_gpio_set_cfgpin(pin, SUN50I_GPC_SPI0);
+                            }
+                        }
 			else
 				sunxi_gpio_set_cfgpin(pin, SUNXI_GPC_SPI0);
 			sunxi_gpio_set_drv(pin, drive);
